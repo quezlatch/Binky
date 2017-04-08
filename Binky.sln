@@ -7,6 +7,11 @@ Project("{5DD5E4FA-CB73-4610-85AB-557B54E96AA9}") = "Binky.Nuget", "Binky.Nuget\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Binky.Tests", "Binky.Tests\Binky.Tests.csproj", "{177A2F2D-A823-472E-BFCF-D87FD41D6299}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{83B86D8D-FCE5-4401-B79C-28016E50CCD7}"
+	ProjectSection(SolutionItems) = preProject
+		README.md = README.md
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
