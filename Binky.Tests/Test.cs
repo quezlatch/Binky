@@ -30,16 +30,31 @@ namespace Binky.Tests
 		{
 			var initialValue = _cache.Get("a");
 			var refreshedValue = _cache.Get("a");
-			Assert.Same(initialValue,refreshedValue);
+			Assert.Same(initialValue, refreshedValue);
 		}
 
 		[Fact]
 		public void value_is_refreshed_after_interval()
 		{
 			var initialValue = _cache.Get("a");
-			System.Threading.Thread.Sleep(200);
+			Thread.Sleep(200);
 			var refreshedValue = _cache.Get("a");
-			Assert.NotSame(initialValue,refreshedValue);
+			Assert.NotSame(initialValue, refreshedValue);
+		}
+
+		[Fact]
+		public void new_value_can_be_retrieved_adhoc()
+		{
+			Assert.StartsWith("d: timestamp is ", _cache.Get("d"));
+		}
+
+		[Fact]
+		public void new_value_is_refreshed_after_interval()
+		{
+			var initialValue = _cache.Get("d");
+			Thread.Sleep(200);
+			var refreshedValue = _cache.Get("d");
+			Assert.NotSame(initialValue, refreshedValue);
 		}
 
 		public string UpdateWithKeyAndTime(string key) => $"{key}: timestamp is {DateTime.Now}";

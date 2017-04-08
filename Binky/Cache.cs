@@ -14,45 +14,33 @@ namespace Binky
 		readonly Timer _timer;
 
 		readonly Func<TKey, TValue> _getUpdateValue;
-		readonly TKey[] _keys;
 
 		public Cache(Func<TKey, TValue> getUpdateValue, TimeSpan every, TimeSpan begin, TKey[] keys)
 		{
 			var kvp = from key in keys select new KeyValuePair<TKey, Item>(key, Item.New());
 			_dictionary = new ConcurrentDictionary<TKey, Item>(kvp);
 			_getUpdateValue = getUpdateValue;
-			_keys = keys;
 			_timer = new Timer(Tick, null, begin, every);
 		}
 
-		public TValue Get(TKey key)
-		{
-			return _dictionary[key].Completion.Task.Result;
-		}
+		public TValue Get(TKey key) => _dictionary.GetOrAdd(key, _ => Item.New()).Completion.Task.Result;
 
 		void Tick(object state)
 		{
 			//TODO: need an interlock here to ditch Tick if it's already going
-			foreach (var key in _keys)
+			foreach (var kvp in _dictionary)
 			{
-				Item item;
-				if (_dictionary.TryGetValue(key, out item))
+				var key = kvp.Key;
+				var item = kvp.Value;
+				Task.Run(() => _getUpdateValue(key)).ContinueWith(task =>
 				{
-					var k = key;
-					Task.Run(() => _getUpdateValue(k)).ContinueWith(task =>
+					//TODO: probably some complicate concurrency stuff here...
+					if (item.Completion.Task.Status == TaskStatus.RanToCompletion)
 					{
-						//TODO: probably some complicate concurrency stuff here...
-						if (item.Completion.Task.Status == TaskStatus.RanToCompletion)
-						{
-							item.Completion = new TaskCompletionSource<TValue>();
-						}
-						item.Completion.SetResult(task.Result);
-					});
-				}
-				else
-				{
-					//TODO: should probably do something here...
-				}
+						item.Completion = new TaskCompletionSource<TValue>();
+					}
+					item.Completion.SetResult(task.Result);
+				});
 			}
 		}
 
