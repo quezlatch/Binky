@@ -10,6 +10,7 @@ namespace Binky
 
 	public sealed class Cache<TKey, TValue> : IDisposable
 	{
+		int Ticking;
 		readonly ConcurrentDictionary<TKey, Item> _dictionary;
 		readonly Timer _timer;
 
@@ -27,20 +28,32 @@ namespace Binky
 
 		void Tick(object state)
 		{
-			//TODO: need an interlock here to ditch Tick if it's already going
+			if (Interlocked.CompareExchange(ref Ticking, 1, 0) == 0)
+				try
+				{
+					ThreadSafeTick();
+				}
+				finally
+				{
+					Interlocked.Exchange(ref Ticking, 0);
+				}
+		}
+
+		void ThreadSafeTick()
+		{
 			foreach (var kvp in _dictionary)
 			{
 				var key = kvp.Key;
 				var item = kvp.Value;
 				Task.Run(() => _getUpdateValue(key)).ContinueWith(task =>
-				{
-					//TODO: probably some complicate concurrency stuff here...
-					if (item.Completion.Task.Status == TaskStatus.RanToCompletion)
-					{
-						item.Completion = new TaskCompletionSource<TValue>();
-					}
-					item.Completion.SetResult(task.Result);
-				});
+									{
+										//TODO: probably some complicate concurrency stuff here...
+										if (item.Completion.Task.Status == TaskStatus.RanToCompletion)
+										{
+											item.Completion = new TaskCompletionSource<TValue>();
+										}
+										item.Completion.SetResult(task.Result);
+									});
 			}
 		}
 
