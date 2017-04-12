@@ -17,12 +17,16 @@ namespace Binky
 
 		readonly Func<TKey, TValue> _getUpdateValue;
 
-		public Cache(Func<TKey, TValue> getUpdateValue, TimeSpan every, TimeSpan begin, TKey[] keys)
+		long _rampUpTicks;
+
+
+		public Cache(Func<TKey, TValue> getUpdateValue, TimeSpan every, TimeSpan begin, TKey[] keys, TimeSpan rampUp)
 		{
 			var kvp = from key in keys select new KeyValuePair<TKey, Item>(key, Item.New());
 			_dictionary = new ConcurrentDictionary<TKey, Item>(kvp);
 			_getUpdateValue = getUpdateValue;
 			_timer = new Timer(Tick, null, begin, every);
+			_rampUpTicks = rampUp.Ticks;
 		}
 
 		public TValue Get(TKey key) => _dictionary.GetOrAdd(key, _ => Item.New()).Completion.Task.Result;
@@ -42,12 +46,15 @@ namespace Binky
 
 		void ThreadSafeTick()
 		{
+			var i = 0;
 			foreach (var kvp in _dictionary)
 			{
 				var key = kvp.Key;
 				var item = kvp.Value;
-				Task.Run(() =>
+				var rampUp = new TimeSpan(i * _rampUpTicks);
+				Task.Run(async () =>
 				{
+					await Task.Delay(rampUp);
 					var result = _getUpdateValue(key);
 					if (item.Completion.Task.Status == TaskStatus.RanToCompletion)
 					{
@@ -55,6 +62,7 @@ namespace Binky
 					}
 					item.Completion.SetResult(result);
 				});
+				i++;
 			}
 		}
 

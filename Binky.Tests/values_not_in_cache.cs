@@ -4,9 +4,10 @@ using Xunit;
 
 namespace Binky.Tests
 {
-	public class values_not_in_cache
+	public class values_not_in_cache : IDisposable
 	{
 		readonly Cache<string, string> _cache;
+
 		public values_not_in_cache()
 		{
 			_cache = CacheBuilder
@@ -33,5 +34,9 @@ namespace Binky.Tests
 
 		public string UpdateWithKeyAndTime(string key) => $"{key}: timestamp is {DateTime.Now}";
 
+		public void Dispose()
+		{
+			_cache.Dispose();
+		}
 	}
 }

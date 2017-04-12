@@ -27,6 +27,8 @@ namespace Binky
 
 			TimeSpan _begin;
 
+			TimeSpan _rampUp;
+
 
 			public Builder(Func<TKey, TValue> getUpdateValue)
 			{
@@ -35,7 +37,7 @@ namespace Binky
 
 			public Cache<TKey, TValue> Build()
 			{
-				return new Cache<TKey, TValue>(_getUpdateValue, _every, _begin, _values);
+				return new Cache<TKey, TValue>(_getUpdateValue, _every, _begin, _values, _rampUp);
 			}
 
 			public IBuilder<TKey, TValue> Preload(params TKey[] values)
@@ -55,6 +57,12 @@ namespace Binky
 				_begin = begin;
 				return this;
 			}
+
+			public IBuilder<TKey, TValue> WithRampUpDuration(TimeSpan rampUp)
+			{
+				_rampUp=rampUp;
+				return this;
+			}
 		}
 	}
 
@@ -62,6 +70,7 @@ namespace Binky
 	{
 		IBuilder<TKey, TValue> RefreshEvery(TimeSpan every);
 		IBuilder<TKey, TValue> BeginAfter(TimeSpan every);
+		IBuilder<TKey, TValue> WithRampUpDuration(TimeSpan timeSpan);
 		IBuilder<TKey, TValue> Preload(params TKey[] values);
 		Cache<TKey, TValue> Build();
 	}
