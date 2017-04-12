@@ -40,7 +40,8 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Test.cs" />
+    <Compile Include="values_preloaded_in_cache.cs" />
+    <Compile Include="values_not_in_cache.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

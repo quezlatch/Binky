@@ -1,13 +1,14 @@
 ﻿using System;
 using System.Threading;
 using Xunit;
+
 namespace Binky.Tests
 {
-	public class Test
+	public class values_preloaded_in_cache : IDisposable
 	{
 		readonly Cache<string, string> _cache;
 
-		public Test()
+		public values_preloaded_in_cache()
 		{
 			_cache = CacheBuilder
 				.With<string, string>(UpdateWithKeyAndTime)
@@ -20,13 +21,13 @@ namespace Binky.Tests
 		[InlineData("a")]
 		[InlineData("b")]
 		[InlineData("c")]
-		public void value_is_preloaded_by_key(string key)
+		public void are_preloaded_by_key(string key)
 		{
 			Assert.StartsWith($"{key}: timestamp is ", _cache.Get(key));
 		}
 
 		[Fact]
-		public void value_is_not_refreshed_before_interval()
+		public void are_not_refreshed_before_interval()
 		{
 			var initialValue = _cache.Get("a");
 			var refreshedValue = _cache.Get("a");
@@ -34,7 +35,7 @@ namespace Binky.Tests
 		}
 
 		[Fact]
-		public void value_is_refreshed_after_interval()
+		public void are_refreshed_after_interval()
 		{
 			var initialValue = _cache.Get("a");
 			Thread.Sleep(200);
@@ -42,21 +43,11 @@ namespace Binky.Tests
 			Assert.NotSame(initialValue, refreshedValue);
 		}
 
-		[Fact]
-		public void new_value_can_be_retrieved_adhoc()
-		{
-			Assert.StartsWith("d: timestamp is ", _cache.Get("d"));
-		}
-
-		[Fact]
-		public void new_value_is_refreshed_after_interval()
-		{
-			var initialValue = _cache.Get("d");
-			Thread.Sleep(200);
-			var refreshedValue = _cache.Get("d");
-			Assert.NotSame(initialValue, refreshedValue);
-		}
-
 		public string UpdateWithKeyAndTime(string key) => $"{key}: timestamp is {DateTime.Now}";
+
+		public void Dispose()
+		{
+			_cache.Dispose();
+		}
 	}
 }

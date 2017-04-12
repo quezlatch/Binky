@@ -7,9 +7,7 @@ using System.Threading.Tasks;
 
 namespace Binky
 {
-	public static class Jobby
-	{
-	}
+	//TODO: don't forget ASP Hosting Queue
 
 	public sealed class Cache<TKey, TValue> : IDisposable
 	{
