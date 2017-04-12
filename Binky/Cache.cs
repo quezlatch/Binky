@@ -7,10 +7,13 @@ using System.Threading.Tasks;
 
 namespace Binky
 {
+	public static class Jobby
+	{
+	}
 
 	public sealed class Cache<TKey, TValue> : IDisposable
 	{
-		int Ticking;
+		int _isProcessingTick;
 		readonly ConcurrentDictionary<TKey, Item> _dictionary;
 		readonly Timer _timer;
 
@@ -28,14 +31,14 @@ namespace Binky
 
 		void Tick(object state)
 		{
-			if (Interlocked.CompareExchange(ref Ticking, 1, 0) == 0)
+			if (Interlocked.CompareExchange(ref _isProcessingTick, 1, 0) == 0)
 				try
 				{
 					ThreadSafeTick();
 				}
 				finally
 				{
-					Interlocked.Exchange(ref Ticking, 0);
+					Interlocked.Exchange(ref _isProcessingTick, 0);
 				}
 		}
 
@@ -45,15 +48,15 @@ namespace Binky
 			{
 				var key = kvp.Key;
 				var item = kvp.Value;
-				Task.Run(() => _getUpdateValue(key)).ContinueWith(task =>
-									{
-										//TODO: probably some complicate concurrency stuff here...
-										if (item.Completion.Task.Status == TaskStatus.RanToCompletion)
-										{
-											item.Completion = new TaskCompletionSource<TValue>();
-										}
-										item.Completion.SetResult(task.Result);
-									});
+				Task.Run(() =>
+				{
+					var result = _getUpdateValue(key);
+					if (item.Completion.Task.Status == TaskStatus.RanToCompletion)
+					{
+						item.Completion = new TaskCompletionSource<TValue>();
+					}
+					item.Completion.SetResult(result);
+				});
 			}
 		}
 
