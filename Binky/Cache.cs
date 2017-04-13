@@ -4,10 +4,15 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Web.Hosting;
 
 namespace Binky
 {
-	//TODO: don't forget ASP Hosting Queue
+	//TODO: don't forget ASP Hosting Queue (playing silly buggers in xamarin)
+	//public static class Runner
+	//{
+	//	public static Func<Func<Task>, Task> Run = HostingEnvironment.IsHosted ? HostingEnvironment.:Task.Run;
+	//}
 
 	public sealed class Cache<TKey, TValue> : IDisposable
 	{
@@ -97,6 +102,6 @@ namespace Binky
 					Completion = new TaskCompletionSource<TValue>();
 				}
 			}
-	}
+		}
 	}
 }

@@ -7,7 +7,7 @@
     <OutputType>Library</OutputType>
     <RootNamespace>Binky.Tests</RootNamespace>
     <AssemblyName>Binky.Tests</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
