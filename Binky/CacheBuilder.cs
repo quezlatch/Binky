@@ -12,10 +12,8 @@ namespace Binky
 		public static IBuilder<TKey, TValue> WithAsync<TKey, TValue>(Cache<TKey, TValue>.UpdateValueDelegate getUpdateValue)
 			=> new Builder<TKey, TValue>(getUpdateValue);
 
-		private class Builder<TKey, TValue> : IBuilder<TKey, TValue>
+		class Builder<TKey, TValue> : IBuilder<TKey, TValue>
 		{
-			static readonly TKey[] Empty = new TKey[0];
-
 			Cache<TKey, TValue>.UpdateValueDelegate _getUpdateValue;
 
 			TKey[] _values;
@@ -34,7 +32,7 @@ namespace Binky
 
 			public Cache<TKey, TValue> Build()
 			{
-				return new Cache<TKey, TValue>(_getUpdateValue, _every, _begin, _values ?? Empty, _rampUp);
+				return new Cache<TKey, TValue>(_getUpdateValue, _every, _begin, _values ?? new TKey[0], _rampUp);
 			}
 
 			public IBuilder<TKey, TValue> Preload(params TKey[] values)
@@ -61,19 +59,5 @@ namespace Binky
 				return this;
 			}
 		}
-	}
-
-	public interface IBuilder<TKey, TValue>
-	{
-		IBuilder<TKey, TValue> RefreshEvery(TimeSpan every);
-		IBuilder<TKey, TValue> BeginAfter(TimeSpan every);
-		IBuilder<TKey, TValue> WithRampUpDuration(TimeSpan timeSpan);
-		IBuilder<TKey, TValue> Preload(params TKey[] values);
-		Cache<TKey, TValue> Build();
-	}
-
-	public interface IUpdateValue<TKey, TValue>
-	{
-		Task<TValue> Get(TKey key);
 	}
 }

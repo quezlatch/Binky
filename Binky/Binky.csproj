@@ -34,6 +34,8 @@
     <Compile Include="CacheBuilder.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Cache.cs" />
+    <Compile Include="IBuilder.cs" />
+    <Compile Include="IUpdateValue.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
