@@ -42,7 +42,17 @@ namespace Binky
 			item.Used = true;
 			return item.Completion.Task;
 		}
-		public TValue Get(TKey key) => GetAsync(key).Result;
+		public TValue Get(TKey key)
+		{
+			try
+			{
+			return GetAsync(key).Result;
+			}
+			catch (AggregateException ex)
+			{
+				throw ex.InnerException;
+			}
+		}
 
 		Item AddNewValue(TKey key)
 		{
@@ -81,6 +91,14 @@ namespace Binky
 						var result = await _getUpdateValue(key);
 						item.SetResult(result);
 					}
+					catch (AggregateException ex)
+					{
+						item.SetException(ex.InnerException);
+					}
+					catch (Exception ex)
+					{
+						item.SetException(ex);
+					}
 					finally
 					{
 						Interlocked.Exchange(ref item.IsProcessingTick, 0);
@@ -105,10 +123,17 @@ namespace Binky
 			{
 				Completion = new TaskCompletionSource<TValue>()
 			};
+
 			internal void SetResult(TValue result)
 			{
 				EnsureCompletionIsUpdatable();
 				Completion.SetResult(result);
+			}
+
+			internal void SetException(Exception ex)
+			{
+				EnsureCompletionIsUpdatable();
+				Completion.SetException(ex);
 			}
 
 			void EnsureCompletionIsUpdatable()
@@ -118,6 +143,7 @@ namespace Binky
 					Completion = new TaskCompletionSource<TValue>();
 				}
 			}
+
 		}
 	}
 }

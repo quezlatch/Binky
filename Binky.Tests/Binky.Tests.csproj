@@ -45,6 +45,7 @@
     <Compile Include="values_updated_in_cache.cs" />
     <Compile Include="update_value_factory.cs" />
     <Compile Include="old_values_in_cache.cs" />
+    <Compile Include="exceptions_thrown_when_retrieving_values.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

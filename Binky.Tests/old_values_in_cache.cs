@@ -26,7 +26,7 @@ namespace Binky.Tests
 		[Fact]
 		public void can_be_evicted_if_they_have_not_been_retrieved_since_the_last_refresh()
 		{
-			var _ = _cache.Get("a");
+			_cache.Get("a");
 			Thread.Sleep(1000);
 			Assert.Equal(1, _count);
 		}
