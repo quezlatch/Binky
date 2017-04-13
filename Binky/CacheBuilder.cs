@@ -1,25 +1,22 @@
 ﻿using System;
-using System.Collections.Concurrent;
-using System.Threading;
+using System.Threading.Tasks;
 
 namespace Binky
 {
-	public class CacheBuilder
+	public static class CacheBuilder
 	{
-		//public static void WithFactory<TKey, TValue>(IUpdateValueFactory<TKey, TValue> factory)
-		//{ }
-		//public static void WithFactory<TKey, TValue, TState>(IUpdateValueFactory<TKey, TValue, TState> factory)
-		//{ }
+		public static IBuilder<TKey, TValue> WithFactory<TKey, TValue>(Func<IUpdateValue<TKey, TValue>> getValueUpdater)
+			=> new Builder<TKey, TValue>(getValueUpdater().Get);
 		public static IBuilder<TKey, TValue> With<TKey, TValue>(Func<TKey, TValue> getUpdateValue)
-		{
-			return new Builder<TKey, TValue>(getUpdateValue);
-		}
-		//public static void With<TKey, TValue, TState>(Func<TKey, TState, TValue> getUpdateValue)
-		//{ }
+			=> new Builder<TKey, TValue>(key => Task.FromResult(getUpdateValue(key)));
+		public static IBuilder<TKey, TValue> WithAsync<TKey, TValue>(Cache<TKey, TValue>.UpdateValueDelegate getUpdateValue)
+			=> new Builder<TKey, TValue>(getUpdateValue);
 
 		private class Builder<TKey, TValue> : IBuilder<TKey, TValue>
 		{
-			Func<TKey, TValue> _getUpdateValue;
+			static readonly TKey[] Empty = new TKey[0];
+
+			Cache<TKey, TValue>.UpdateValueDelegate _getUpdateValue;
 
 			TKey[] _values;
 
@@ -30,14 +27,14 @@ namespace Binky
 			TimeSpan _rampUp;
 
 
-			public Builder(Func<TKey, TValue> getUpdateValue)
+			public Builder(Cache<TKey, TValue>.UpdateValueDelegate getUpdateValue)
 			{
 				_getUpdateValue = getUpdateValue;
 			}
 
 			public Cache<TKey, TValue> Build()
 			{
-				return new Cache<TKey, TValue>(_getUpdateValue, _every, _begin, _values, _rampUp);
+				return new Cache<TKey, TValue>(_getUpdateValue, _every, _begin, _values ?? Empty, _rampUp);
 			}
 
 			public IBuilder<TKey, TValue> Preload(params TKey[] values)
@@ -60,7 +57,7 @@ namespace Binky
 
 			public IBuilder<TKey, TValue> WithRampUpDuration(TimeSpan rampUp)
 			{
-				_rampUp=rampUp;
+				_rampUp = rampUp;
 				return this;
 			}
 		}
@@ -75,22 +72,8 @@ namespace Binky
 		Cache<TKey, TValue> Build();
 	}
 
-	public interface IUpdateValueFactory<TKey, TValue>
-	{
-		IUpdateValue<TKey, TValue> Get();
-	}
-
-	public interface IUpdateValueFactory<TKey, TValue, TState>
-	{
-		IUpdateValue<TKey, TValue> Get(TState state);
-	}
-
 	public interface IUpdateValue<TKey, TValue>
 	{
-		TValue UpdateValue(TKey key);
-	}
-	public interface IUpdateValue<TKey, TValue, TState>
-	{
-		TValue UpdateValue(TKey key, TState state);
+		Task<TValue> Get(TKey key);
 	}
 }

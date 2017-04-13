@@ -15,12 +15,11 @@ namespace Binky
 		readonly ConcurrentDictionary<TKey, Item> _dictionary;
 		readonly Timer _timer;
 
-		readonly Func<TKey, TValue> _getUpdateValue;
+		readonly UpdateValueDelegate _getUpdateValue;
 
-		long _rampUpTicks;
+		readonly long _rampUpTicks;
 
-
-		public Cache(Func<TKey, TValue> getUpdateValue, TimeSpan every, TimeSpan begin, TKey[] keys, TimeSpan rampUp)
+		public Cache(UpdateValueDelegate getUpdateValue, TimeSpan every, TimeSpan begin, TKey[] keys, TimeSpan rampUp)
 		{
 			var kvp = from key in keys select new KeyValuePair<TKey, Item>(key, Item.New());
 			_dictionary = new ConcurrentDictionary<TKey, Item>(kvp);
@@ -55,7 +54,7 @@ namespace Binky
 				Task.Run(async () =>
 				{
 					await Task.Delay(rampUp);
-					var result = _getUpdateValue(key);
+					var result = await _getUpdateValue(key);
 					if (item.Completion.Task.Status == TaskStatus.RanToCompletion)
 					{
 						item.Completion = new TaskCompletionSource<TValue>();
@@ -70,6 +69,8 @@ namespace Binky
 		{
 			_timer.Dispose();
 		}
+
+		public delegate Task<TValue> UpdateValueDelegate(TKey key);
 
 		// is class not struct so we can mutate Completion
 		public class Item
