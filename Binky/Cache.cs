@@ -11,7 +11,6 @@ namespace Binky
 
 	public sealed class Cache<TKey, TValue> : IDisposable
 	{
-		int _isProcessingTick;
 		readonly ConcurrentDictionary<TKey, Item> _dictionary;
 		readonly Timer _timer;
 
@@ -28,41 +27,45 @@ namespace Binky
 			_rampUpTicks = rampUp.Ticks;
 		}
 
-		public TValue Get(TKey key) => _dictionary.GetOrAdd(key, _ => Item.New()).Completion.Task.Result;
+		public Task<TValue> GetAsync(TKey key) => _dictionary.GetOrAdd(key, AddNewValue).Completion.Task;
+		public TValue Get(TKey key) => GetAsync(key).Result;
 
-		void Tick(object state)
+		Item AddNewValue(TKey key)
 		{
-			if (Interlocked.CompareExchange(ref _isProcessingTick, 1, 0) == 0)
-				try
-				{
-					ThreadSafeTick();
-				}
-				finally
-				{
-					Interlocked.Exchange(ref _isProcessingTick, 0);
-				}
+			var item = Item.New();
+			UpdateValueInBackground(new TimeSpan(), key, item);
+			return item;
 		}
 
-		void ThreadSafeTick()
+		void Tick(object state)
 		{
 			var i = 0;
 			foreach (var kvp in _dictionary)
 			{
+				var rampUp = new TimeSpan(i * _rampUpTicks);
 				var key = kvp.Key;
 				var item = kvp.Value;
-				var rampUp = new TimeSpan(i * _rampUpTicks);
-				Task.Run(async () =>
-				{
-					await Task.Delay(rampUp);
-					var result = await _getUpdateValue(key);
-					if (item.Completion.Task.Status == TaskStatus.RanToCompletion)
-					{
-						item.Completion = new TaskCompletionSource<TValue>();
-					}
-					item.Completion.SetResult(result);
-				});
+				UpdateValueInBackground(rampUp, key, item);
 				i++;
 			}
+		}
+
+		void UpdateValueInBackground(TimeSpan rampUpDelay, TKey key, Item item)
+		{
+			Task.Run(async () =>
+			{
+				if (Interlocked.CompareExchange(ref item.IsProcessingTick, 1, 0) == 0)
+					try
+					{
+						await Task.Delay(rampUpDelay);
+						var result = await _getUpdateValue(key);
+						item.SetResult(result);
+					}
+					finally
+					{
+						Interlocked.Exchange(ref item.IsProcessingTick, 0);
+					}
+			});
 		}
 
 		public void Dispose()
@@ -75,12 +78,25 @@ namespace Binky
 		// is class not struct so we can mutate Completion
 		public class Item
 		{
+			public int IsProcessingTick;
 			public TaskCompletionSource<TValue> Completion;
 			public static Item New() => new Item
 			{
 				Completion = new TaskCompletionSource<TValue>()
 			};
-		}
-	}
+			internal void SetResult(TValue result)
+			{
+				EnsureCompletionIsUpdatable();
+				Completion.SetResult(result);
+			}
 
+			void EnsureCompletionIsUpdatable()
+			{
+				if (Completion.Task.Status == TaskStatus.RanToCompletion)
+				{
+					Completion = new TaskCompletionSource<TValue>();
+				}
+			}
+	}
+	}
 }

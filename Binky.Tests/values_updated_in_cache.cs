@@ -22,7 +22,7 @@ namespace Binky.Tests
 		{
 			var aDate = _cache.Get("a");
 			var bDate = _cache.Get("b");
-			Assert.NotInRange((bDate - aDate).TotalMilliseconds, -100.0, 100.0);
+			Assert.NotInRange((bDate - aDate).TotalMilliseconds, -90.0, 90.0);
 		}
 
 		public void Dispose()
