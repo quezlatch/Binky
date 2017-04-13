@@ -10,7 +10,8 @@ namespace Binky
 		IBuilder<TKey, TValue> BeginAfter(TimeSpan every);
 		IBuilder<TKey, TValue> WithRampUpDuration(TimeSpan timeSpan);
 		IBuilder<TKey, TValue> Preload(params TKey[] values);
+		IBuilder<TKey, TValue> EvictUnused();
 		Cache<TKey, TValue> Build();
 	}
-	
+
 }

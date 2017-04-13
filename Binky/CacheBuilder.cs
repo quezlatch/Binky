@@ -24,6 +24,9 @@ namespace Binky
 
 			TimeSpan _rampUp;
 
+			bool _evictUnused;
+
+
 
 			public Builder(Cache<TKey, TValue>.UpdateValueDelegate getUpdateValue)
 			{
@@ -32,7 +35,7 @@ namespace Binky
 
 			public Cache<TKey, TValue> Build()
 			{
-				return new Cache<TKey, TValue>(_getUpdateValue, _every, _begin, _values ?? new TKey[0], _rampUp);
+				return new Cache<TKey, TValue>(_getUpdateValue, _every, _begin, _values ?? new TKey[0], _rampUp, _evictUnused);
 			}
 
 			public IBuilder<TKey, TValue> Preload(params TKey[] values)
@@ -56,6 +59,12 @@ namespace Binky
 			public IBuilder<TKey, TValue> WithRampUpDuration(TimeSpan rampUp)
 			{
 				_rampUp = rampUp;
+				return this;
+			}
+
+			public IBuilder<TKey, TValue> EvictUnused()
+			{
+				_evictUnused = true;
 				return this;
 			}
 		}

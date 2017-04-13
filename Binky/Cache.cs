@@ -23,16 +23,25 @@ namespace Binky
 
 		readonly long _rampUpTicks;
 
-		public Cache(UpdateValueDelegate getUpdateValue, TimeSpan every, TimeSpan begin, TKey[] keys, TimeSpan rampUp)
+		readonly bool _evictUnused;
+
+
+		public Cache(UpdateValueDelegate getUpdateValue, TimeSpan every, TimeSpan begin, TKey[] keys, TimeSpan rampUp, bool evictUnused)
 		{
 			var kvp = from key in keys select new KeyValuePair<TKey, Item>(key, Item.New());
 			_dictionary = new ConcurrentDictionary<TKey, Item>(kvp);
 			_getUpdateValue = getUpdateValue;
 			_timer = new Timer(Tick, null, begin, every);
 			_rampUpTicks = rampUp.Ticks;
+			_evictUnused = evictUnused;
 		}
 
-		public Task<TValue> GetAsync(TKey key) => _dictionary.GetOrAdd(key, AddNewValue).Completion.Task;
+		public Task<TValue> GetAsync(TKey key)
+		{
+			var item = _dictionary.GetOrAdd(key, AddNewValue);
+			item.Used = true;
+			return item.Completion.Task;
+		}
 		public TValue Get(TKey key) => GetAsync(key).Result;
 
 		Item AddNewValue(TKey key)
@@ -47,11 +56,17 @@ namespace Binky
 			var i = 0;
 			foreach (var kvp in _dictionary)
 			{
-				var rampUp = new TimeSpan(i * _rampUpTicks);
 				var key = kvp.Key;
 				var item = kvp.Value;
-				UpdateValueInBackground(rampUp, key, item);
-				i++;
+				if (_evictUnused && !item.Used)
+					_dictionary.TryRemove(key, out item);
+				else
+				{
+					item.Used = false;
+					var rampUp = new TimeSpan(i * _rampUpTicks);
+					UpdateValueInBackground(rampUp, key, item);
+					i++;
+				}
 			}
 		}
 
@@ -84,6 +99,7 @@ namespace Binky
 		public class Item
 		{
 			public int IsProcessingTick;
+			public bool Used;
 			public TaskCompletionSource<TValue> Completion;
 			public static Item New() => new Item
 			{
