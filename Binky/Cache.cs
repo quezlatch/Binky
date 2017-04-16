@@ -88,7 +88,7 @@ namespace Binky
 		public delegate Task<TValue> UpdateValueDelegate(TKey key);
 
 		// is class not struct so we can mutate Completion
-		public class Item
+		class Item
 		{
 			public int IsProcessingTick;
 			public bool Used;
