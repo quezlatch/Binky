@@ -46,7 +46,7 @@ namespace Binky
 		{
 			try
 			{
-			return GetAsync(key).Result;
+				return GetAsync(key).Result;
 			}
 			catch (AggregateException ex)
 			{
@@ -57,7 +57,7 @@ namespace Binky
 		Item AddNewValue(TKey key)
 		{
 			var item = Item.New();
-			UpdateValueInBackground(new TimeSpan(), key, item);
+			item.UpdateValueInBackground(new TimeSpan(), key, _getUpdateValue);
 			return item;
 		}
 
@@ -74,36 +74,10 @@ namespace Binky
 				{
 					item.Used = false;
 					var rampUp = new TimeSpan(i * _rampUpTicks);
-					UpdateValueInBackground(rampUp, key, item);
+					item.UpdateValueInBackground(rampUp, key, _getUpdateValue);
 					i++;
 				}
 			}
-		}
-
-		void UpdateValueInBackground(TimeSpan rampUpDelay, TKey key, Item item)
-		{
-			Task.Run(async () =>
-			{
-				if (Interlocked.CompareExchange(ref item.IsProcessingTick, 1, 0) == 0)
-					try
-					{
-						await Task.Delay(rampUpDelay);
-						var result = await _getUpdateValue(key);
-						item.SetResult(result);
-					}
-					catch (AggregateException ex)
-					{
-						item.SetException(ex.InnerException);
-					}
-					catch (Exception ex)
-					{
-						item.SetException(ex);
-					}
-					finally
-					{
-						Interlocked.Exchange(ref item.IsProcessingTick, 0);
-					}
-			});
 		}
 
 		public void Dispose()
@@ -123,6 +97,33 @@ namespace Binky
 			{
 				Completion = new TaskCompletionSource<TValue>()
 			};
+
+			internal void UpdateValueInBackground(TimeSpan rampUpDelay, TKey key, UpdateValueDelegate getUpdateValue)
+			{
+				Task.Run(async () =>
+				{
+					if (Interlocked.CompareExchange(ref IsProcessingTick, 1, 0) == 0)
+						try
+						{
+							await Task.Delay(rampUpDelay);
+							var result = await getUpdateValue(key);
+							SetResult(result);
+						}
+						catch (AggregateException ex)
+						{
+							SetException(ex.InnerException);
+						}
+						catch (Exception ex)
+						{
+							SetException(ex);
+						}
+						finally
+						{
+							Interlocked.Exchange(ref IsProcessingTick, 0);
+						}
+				});
+			}
+
 
 			internal void SetResult(TValue result)
 			{
