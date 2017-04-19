@@ -1,53 +1,46 @@
-<?xml version="1.0" encoding="utf-8"?>
-<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="$(NuGetAuthoringPath)\NuGet.Packaging.Authoring.props" Condition="Exists('$(NuGetAuthoringPath)\NuGet.Packaging.Authoring.props')" />
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|AnyCPU">
+      <Configuration>Debug</Configuration>
+      <Platform>AnyCPU</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|AnyCPU">
+      <Configuration>Release</Configuration>
+      <Platform>AnyCPU</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>6cbdaf78-2c6c-4a09-98ae-20d4f9c79ae3</ProjectGuid>
+  </PropertyGroup>
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{9BDC1FEC-FDA4-4EF8-9212-209BF69B90E4}</ProjectGuid>
-    <Description>Preemptive caching for .net</Description>
-    <PackageId>Binky</PackageId>
-    <PackageVersion>1.0.0</PackageVersion>
+    <NuProjPath Condition=" '$(NuProjPath)' == '' ">$(MSBuildExtensionsPath)\NuProj\</NuProjPath>
+  </PropertyGroup>
+  <Import Project="$(NuProjPath)\NuProj.props" Condition="Exists('$(NuProjPath)\NuProj.props')" />
+  <PropertyGroup Label="Configuration">
+    <Id>Binky</Id>
+    <Version>1.0.0</Version>
+    <Title>Binky</Title>
     <Authors>Michael Dickens</Authors>
-    <DevelopmentDependency>false</DevelopmentDependency>
-    <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
-    <OutputType>Exe</OutputType>
-    <RootNamespace>Binky.Nuget</RootNamespace>
-    <UsePartialTypes>false</UsePartialTypes>
-    <AssemblyName>Binky.Nuget</AssemblyName>
-    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <OutputPath>bin\Debug</OutputPath>
-    <ErrorReport>prompt</ErrorReport>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <OutputPath>bin\Release</OutputPath>
-    <ErrorReport>prompt</ErrorReport>
+    <Owners>Michael Dickens</Owners>
+    <Summary>Preemptive caching for .Net</Summary>
+    <Description>Preemptive caching for .Net</Description>
+    <ReleaseNotes>
+    </ReleaseNotes>
+    <ProjectUrl>
+    </ProjectUrl>
+    <LicenseUrl>
+    </LicenseUrl>
+    <Copyright>Copyright © Michael Dickens</Copyright>
+    <Tags>
+    </Tags>
   </PropertyGroup>
   <ItemGroup>
-    <None Include="readme.txt">
-      <IncludeInPackage>true</IncludeInPackage>
-    </None>
+    <Content Include="Readme.txt" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="NuGet.Build.Packaging">
-      <Version>0.1.248</Version>
-      <PrivateAssets>All</PrivateAssets>
-    </PackageReference>
+    <ProjectReference Include="..\Binky.Net452\Binky.Net452.csproj" />
+    <ProjectReference Include="..\Binky.Net46\Binky.Net46.csproj" />
   </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\Binky.Net452\Binky.Net452.csproj">
-      <Project>{7152FA6A-CAE2-4598-920C-725A3D443E53}</Project>
-      <Name>Binky.Net452</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Binky.Net46\Binky.Net46.csproj">
-      <Project>{6E5A0C6C-9432-4F92-8B9C-4D74AA6E7911}</Project>
-      <Name>Binky.Net46</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <Import Project="$(MSBuildBinPath)\Microsoft.Common.targets" />
-  <Import Project="$(NuGetAuthoringPath)\NuGet.Packaging.Authoring.targets" Condition="Exists('$(NuGetAuthoringPath)\NuGet.Packaging.Authoring.targets')" />
+  <Import Project="$(NuProjPath)\NuProj.targets" />
 </Project>

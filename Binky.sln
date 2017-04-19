@@ -1,8 +1,7 @@
-
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2012
-Project("{5DD5E4FA-CB73-4610-85AB-557B54E96AA9}") = "Binky.Nuget", "Binky.Nuget\Binky.Nuget.nuproj", "{9BDC1FEC-FDA4-4EF8-9212-209BF69B90E4}"
-EndProject
+# Visual Studio 14
+VisualStudioVersion = 14.0.25420.1
+MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Binky.Tests", "Binky.Tests\Binky.Tests.csproj", "{177A2F2D-A823-472E-BFCF-D87FD41D6299}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{83B86D8D-FCE5-4401-B79C-28016E50CCD7}"
@@ -16,16 +15,20 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Binky.Net452", "Binky.Net45
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Binky.Net46", "Binky.Net46\Binky.Net46.csproj", "{6E5A0C6C-9432-4F92-8B9C-4D74AA6E7911}"
 EndProject
+Project("{FF286327-C783-4F7A-AB73-9BCBAD0D4460}") = "Binky.Nuget", "Binky.Nuget\Binky.Nuget.nuproj", "{6CBDAF78-2C6C-4A09-98AE-20D4F9C79AE3}"
+EndProject
 Global
+	GlobalSection(SharedMSBuildProjectFiles) = preSolution
+		Binky\Binky.projitems*{177a2f2d-a823-472e-bfcf-d87fd41d6299}*SharedItemsImports = 4
+		Binky\Binky.projitems*{6e5a0c6c-9432-4f92-8b9c-4d74aa6e7911}*SharedItemsImports = 4
+		Binky\Binky.projitems*{7152fa6a-cae2-4598-920c-725a3d443e53}*SharedItemsImports = 4
+		Binky\Binky.projitems*{7d734ffc-4979-4693-b54c-76e15eef618c}*SharedItemsImports = 13
+	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{9BDC1FEC-FDA4-4EF8-9212-209BF69B90E4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{9BDC1FEC-FDA4-4EF8-9212-209BF69B90E4}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{9BDC1FEC-FDA4-4EF8-9212-209BF69B90E4}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{9BDC1FEC-FDA4-4EF8-9212-209BF69B90E4}.Release|Any CPU.Build.0 = Release|Any CPU
 		{177A2F2D-A823-472E-BFCF-D87FD41D6299}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{177A2F2D-A823-472E-BFCF-D87FD41D6299}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{177A2F2D-A823-472E-BFCF-D87FD41D6299}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -38,5 +41,12 @@ Global
 		{6E5A0C6C-9432-4F92-8B9C-4D74AA6E7911}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6E5A0C6C-9432-4F92-8B9C-4D74AA6E7911}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6E5A0C6C-9432-4F92-8B9C-4D74AA6E7911}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6CBDAF78-2C6C-4A09-98AE-20D4F9C79AE3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6CBDAF78-2C6C-4A09-98AE-20D4F9C79AE3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6CBDAF78-2C6C-4A09-98AE-20D4F9C79AE3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6CBDAF78-2C6C-4A09-98AE-20D4F9C79AE3}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
 	EndGlobalSection
 EndGlobal
