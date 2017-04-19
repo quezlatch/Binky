@@ -33,16 +33,20 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Binky\Binky.csproj">
-      <Project>{0BE2B1DE-A822-48C4-BFDA-9DD36092A248}</Project>
-      <Name>Binky</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
     <PackageReference Include="NuGet.Build.Packaging">
-      <Version>0.1.241</Version>
+      <Version>0.1.248</Version>
       <PrivateAssets>All</PrivateAssets>
     </PackageReference>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Binky.Net452\Binky.Net452.csproj">
+      <Project>{7152FA6A-CAE2-4598-920C-725A3D443E53}</Project>
+      <Name>Binky.Net452</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Binky.Net46\Binky.Net46.csproj">
+      <Project>{6E5A0C6C-9432-4F92-8B9C-4D74AA6E7911}</Project>
+      <Name>Binky.Net46</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.Common.targets" />
   <Import Project="$(NuGetAuthoringPath)\NuGet.Packaging.Authoring.targets" Condition="Exists('$(NuGetAuthoringPath)\NuGet.Packaging.Authoring.targets')" />

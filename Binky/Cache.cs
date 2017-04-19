@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Web.Hosting;
 
 namespace Binky
 {
@@ -90,7 +89,7 @@ namespace Binky
 		// is class not struct so we can mutate Completion
 		class Item
 		{
-			public int IsProcessingTick;
+			int _isProcessingTick;
 			public bool Used;
 			public TaskCompletionSource<TValue> Completion;
 			public static Item New() => new Item
@@ -102,7 +101,7 @@ namespace Binky
 			{
 				Task.Run(async () =>
 				{
-					if (Interlocked.CompareExchange(ref IsProcessingTick, 1, 0) == 0)
+					if (Interlocked.CompareExchange(ref _isProcessingTick, 1, 0) == 0)
 						try
 						{
 							await Task.Delay(rampUpDelay);
@@ -119,19 +118,18 @@ namespace Binky
 						}
 						finally
 						{
-							Interlocked.Exchange(ref IsProcessingTick, 0);
+							Interlocked.Exchange(ref _isProcessingTick, 0);
 						}
 				});
 			}
 
-
-			internal void SetResult(TValue result)
+			void SetResult(TValue result)
 			{
 				EnsureCompletionIsUpdatable();
 				Completion.SetResult(result);
 			}
 
-			internal void SetException(Exception ex)
+			void SetException(Exception ex)
 			{
 				EnsureCompletionIsUpdatable();
 				Completion.SetException(ex);
@@ -144,7 +142,6 @@ namespace Binky
 					Completion = new TaskCompletionSource<TValue>();
 				}
 			}
-
 		}
 	}
 }

@@ -1,8 +1,6 @@
 
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2012
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Binky", "Binky\Binky.csproj", "{0BE2B1DE-A822-48C4-BFDA-9DD36092A248}"
-EndProject
 Project("{5DD5E4FA-CB73-4610-85AB-557B54E96AA9}") = "Binky.Nuget", "Binky.Nuget\Binky.Nuget.nuproj", "{9BDC1FEC-FDA4-4EF8-9212-209BF69B90E4}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Binky.Tests", "Binky.Tests\Binky.Tests.csproj", "{177A2F2D-A823-472E-BFCF-D87FD41D6299}"
@@ -12,16 +10,18 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		README.md = README.md
 	EndProjectSection
 EndProject
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Binky", "Binky\Binky.shproj", "{7D734FFC-4979-4693-B54C-76E15EEF618C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Binky.Net452", "Binky.Net452\Binky.Net452.csproj", "{7152FA6A-CAE2-4598-920C-725A3D443E53}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Binky.Net46", "Binky.Net46\Binky.Net46.csproj", "{6E5A0C6C-9432-4F92-8B9C-4D74AA6E7911}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{0BE2B1DE-A822-48C4-BFDA-9DD36092A248}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{0BE2B1DE-A822-48C4-BFDA-9DD36092A248}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{0BE2B1DE-A822-48C4-BFDA-9DD36092A248}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{0BE2B1DE-A822-48C4-BFDA-9DD36092A248}.Release|Any CPU.Build.0 = Release|Any CPU
 		{9BDC1FEC-FDA4-4EF8-9212-209BF69B90E4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{9BDC1FEC-FDA4-4EF8-9212-209BF69B90E4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9BDC1FEC-FDA4-4EF8-9212-209BF69B90E4}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -30,5 +30,13 @@ Global
 		{177A2F2D-A823-472E-BFCF-D87FD41D6299}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{177A2F2D-A823-472E-BFCF-D87FD41D6299}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{177A2F2D-A823-472E-BFCF-D87FD41D6299}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7152FA6A-CAE2-4598-920C-725A3D443E53}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7152FA6A-CAE2-4598-920C-725A3D443E53}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7152FA6A-CAE2-4598-920C-725A3D443E53}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7152FA6A-CAE2-4598-920C-725A3D443E53}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6E5A0C6C-9432-4F92-8B9C-4D74AA6E7911}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6E5A0C6C-9432-4F92-8B9C-4D74AA6E7911}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6E5A0C6C-9432-4F92-8B9C-4D74AA6E7911}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6E5A0C6C-9432-4F92-8B9C-4D74AA6E7911}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
