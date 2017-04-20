@@ -22,7 +22,7 @@ namespace Binky.Tests
 				})
 				.RefreshEvery(TimeSpan.FromMilliseconds(200))
 				.EvictUnused()
-				.Preload("a")
+				.Preload("a", "b")
 				.Build();
 		}
 
