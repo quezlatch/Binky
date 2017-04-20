@@ -6,8 +6,8 @@ namespace Binky.Tests
 {
 	public class old_values_in_cache : IDisposable
 	{
-        const int EnoughTimeToPreload = 100;
-        const int TimeForAFewRefreshes = 1000;
+        const int EnoughTimeToPreload = 200;
+        const int TimeForAFewRefreshes = 1400;
         const int TwoPreloadsAndOneRefresh = 3;
         readonly Cache<string, DateTime> _cache;
 		int _count;
@@ -20,7 +20,7 @@ namespace Binky.Tests
 					_count++;
 					return DateTime.Now;
 				})
-				.RefreshEvery(TimeSpan.FromMilliseconds(200))
+				.RefreshEvery(TimeSpan.FromMilliseconds(400))
 				.EvictUnused()
 				.Preload("a", "b")
 				.Build();
