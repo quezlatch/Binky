@@ -94,7 +94,8 @@ namespace Binky
 			public TaskCompletionSource<TValue> Completion;
 			public static Item New() => new Item
 			{
-				Completion = new TaskCompletionSource<TValue>()
+				Completion = new TaskCompletionSource<TValue>(),
+                Used = true
 			};
 
 			internal void UpdateValueInBackground(TimeSpan rampUpDelay, TKey key, UpdateValueDelegate getUpdateValue)
