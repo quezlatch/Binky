@@ -16,7 +16,7 @@ namespace Binky
 		{
 			Cache<TKey, TValue>.UpdateValueDelegate _getUpdateValue;
 
-			TKey[] _values;
+			TKey[] _keys;
 
 			TimeSpan _every;
 
@@ -35,12 +35,15 @@ namespace Binky
 
 			public Cache<TKey, TValue> Build()
 			{
-				return new Cache<TKey, TValue>(_getUpdateValue, _every, _begin, _values ?? new TKey[0], _rampUp, _evictUnused);
+				var cache = new Cache<TKey, TValue>(_getUpdateValue, _every, _begin, _rampUp, _evictUnused);
+                if (_keys != null)
+                    cache.Load(_keys);
+                return cache;
 			}
 
 			public IBuilder<TKey, TValue> Preload(params TKey[] values)
 			{
-				_values = values;
+				_keys = values;
 				return this;
 			}
 
