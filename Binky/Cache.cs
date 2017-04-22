@@ -102,7 +102,6 @@ namespace Binky
 
 		public delegate Task<TValue> UpdateValueDelegate(TKey key, CancellationToken cancellationToken);
 
-		// is class not struct so we can mutate Completion
 		class Item
 		{
 			int _isProcessingTick;
