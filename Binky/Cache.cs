@@ -19,9 +19,10 @@ namespace Binky
 		readonly bool _evictUnused;
 
 
-		public Cache(UpdateValueDelegate getUpdateValue, TimeSpan every, TimeSpan begin, TimeSpan rampUp, bool evictUnused)
-		{
-			_dictionary = new ConcurrentDictionary<TKey, Item>();
+		public Cache(UpdateValueDelegate getUpdateValue, TimeSpan every, TimeSpan begin, TKey[] keys, TimeSpan rampUp, bool evictUnused)
+        {
+            var kvp = from key in keys select new KeyValuePair<TKey, Item>(key, Item.New());
+            _dictionary = new ConcurrentDictionary<TKey, Item>(kvp);
 			_getUpdateValue = getUpdateValue;
 			_timer = new Timer(Tick, null, begin, every);
 			_rampUpTicks = rampUp.Ticks;
@@ -30,8 +31,23 @@ namespace Binky
 
         public void Load(params TKey[] keys)
         {
+            Load(keys, false);
+        }
+
+        public void Load(IEnumerable<TKey> keys, bool markAsUsed = false)
+        {
+            var i = 0;
             foreach (var key in keys)
-                _dictionary.TryAdd(key, Item.New());
+            {
+                var item = Item.New();
+                if (_dictionary.TryAdd(key, item))
+                {
+                    var rampUp = new TimeSpan(i * _rampUpTicks);
+                    item.Used = markAsUsed;
+                    item.UpdateValueInBackground(rampUp, key, _getUpdateValue);
+                    i++;
+                }
+            }
         }
 
         public Task<TValue> GetAsync(TKey key)

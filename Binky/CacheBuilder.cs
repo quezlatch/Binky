@@ -35,11 +35,8 @@ namespace Binky
 
 			public Cache<TKey, TValue> Build()
 			{
-				var cache = new Cache<TKey, TValue>(_getUpdateValue, _every, _begin, _rampUp, _evictUnused);
-                if (_keys != null)
-                    cache.Load(_keys);
-                return cache;
-			}
+                return new Cache<TKey, TValue>(_getUpdateValue, _every, _begin, _keys ?? new TKey[0], _rampUp, _evictUnused);
+            }
 
 			public IBuilder<TKey, TValue> Preload(params TKey[] values)
 			{
