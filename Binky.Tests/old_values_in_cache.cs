@@ -7,7 +7,7 @@ namespace Binky.Tests
 	public class old_values_in_cache : IDisposable
 	{
         const int EnoughTimeToPreload = 200;
-        const int TimeForAFewRefreshes = 1400;
+        const int TimeForAFewRefreshes = 1000;
         const int TwoPreloadsAndOneRefresh = 3;
         readonly Cache<string, DateTime> _cache;
 		int _count;
