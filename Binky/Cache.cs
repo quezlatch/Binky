@@ -7,13 +7,7 @@ using System.Threading.Tasks;
 
 namespace Binky
 {
-	//TODO: don't forget ASP Hosting Queue (playing silly buggers in xamarin)
-	//public static class Runner
-	//{
-	//	public static Func<Func<Task>, Task> Run = HostingEnvironment.IsHosted ? HostingEnvironment.:Task.Run;
-	//}
-
-	public sealed class Cache<TKey, TValue> : IDisposable
+    public sealed class Cache<TKey, TValue> : IDisposable
 	{
 		readonly ConcurrentDictionary<TKey, Item> _dictionary;
 		readonly Timer _timer;
@@ -100,7 +94,7 @@ namespace Binky
 
 			internal void UpdateValueInBackground(TimeSpan rampUpDelay, TKey key, UpdateValueDelegate getUpdateValue)
 			{
-				Task.Run(async () =>
+				Runner.Enqueue(async cancellationToken =>
 				{
 					if (Interlocked.CompareExchange(ref _isProcessingTick, 1, 0) == 0)
 						try

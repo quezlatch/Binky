@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
@@ -13,5 +13,6 @@
     <Compile Include="$(MSBuildThisFileDirectory)CacheBuilder.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)IBuilder.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)IUpdateValue.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Runner.cs" />
   </ItemGroup>
 </Project>
