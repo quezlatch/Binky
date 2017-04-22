@@ -8,7 +8,7 @@ namespace Binky
 		public static IBuilder<TKey, TValue> WithFactory<TKey, TValue>(Func<IUpdateValue<TKey, TValue>> getValueUpdater)
 			=> new Builder<TKey, TValue>(getValueUpdater().Get);
 		public static IBuilder<TKey, TValue> With<TKey, TValue>(Func<TKey, TValue> getUpdateValue)
-			=> new Builder<TKey, TValue>(key => Task.FromResult(getUpdateValue(key)));
+			=> new Builder<TKey, TValue>((key,_) => Task.FromResult(getUpdateValue(key)));
 		public static IBuilder<TKey, TValue> WithAsync<TKey, TValue>(Cache<TKey, TValue>.UpdateValueDelegate getUpdateValue)
 			=> new Builder<TKey, TValue>(getUpdateValue);
 

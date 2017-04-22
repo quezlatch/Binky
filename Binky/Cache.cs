@@ -78,7 +78,7 @@ namespace Binky
 			_timer.Dispose();
 		}
 
-		public delegate Task<TValue> UpdateValueDelegate(TKey key);
+		public delegate Task<TValue> UpdateValueDelegate(TKey key, CancellationToken cancellationToken);
 
 		// is class not struct so we can mutate Completion
 		class Item
@@ -99,9 +99,17 @@ namespace Binky
 					if (Interlocked.CompareExchange(ref _isProcessingTick, 1, 0) == 0)
 						try
 						{
-							await Task.Delay(rampUpDelay);
-							var result = await getUpdateValue(key);
-							SetResult(result);
+							await Task.Delay(rampUpDelay, cancellationToken);
+                            if (!cancellationToken.IsCancellationRequested)
+                            {
+                                var result = await getUpdateValue(key, cancellationToken);
+                                if (!cancellationToken.IsCancellationRequested)
+                                {
+                                    SetResult(result);
+                                }
+                            }
+                            if (cancellationToken.IsCancellationRequested)
+                                SetCanceled();
 						}
 						catch (AggregateException ex)
 						{
@@ -130,7 +138,13 @@ namespace Binky
 				Completion.SetException(ex);
 			}
 
-			void EnsureCompletionIsUpdatable()
+            void SetCanceled()
+            {
+                EnsureCompletionIsUpdatable();
+                Completion.SetCanceled();
+            }
+
+            void EnsureCompletionIsUpdatable()
 			{
 				if (Completion.Task.Status == TaskStatus.RanToCompletion)
 				{

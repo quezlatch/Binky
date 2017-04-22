@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading;
 using System.Threading.Tasks;
 using Xunit;
 
@@ -21,7 +22,8 @@ namespace Binky.Tests
 
 		class FakeValueRepo : IUpdateValue<string, string>
 		{
-			public Task<string> Get(string key) => Task.FromResult(key + " and value");
+			public Task<string> Get(string key, CancellationToken cancellationToken) 
+                => Task.FromResult(key + " and value");
 		}
 	}
 }
