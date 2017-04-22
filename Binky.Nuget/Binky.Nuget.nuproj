@@ -20,7 +20,7 @@
   <Import Project="$(NuProjPath)\NuProj.props" Condition="Exists('$(NuProjPath)\NuProj.props')" />
   <PropertyGroup Label="Configuration">
     <Id>Binky</Id>
-    <Version>0.1.0</Version>
+    <Version>$(APPVEYOR_BUILD_VERSION)</Version>
     <Title>Binky</Title>
     <Authors>Michael Dickens</Authors>
     <Owners>Michael Dickens</Owners>
