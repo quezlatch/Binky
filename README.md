@@ -2,6 +2,8 @@
 
 ![Build Status](https://ci.appveyor.com/api/projects/status/github/quezlatch/binky)
 
+[![](https://codescene.io/projects/1143/status.svg) Get more details at **codescene.io**.](https://codescene.io/projects/1143/jobs/latest-successful/results)
+
 *Binky* is a very simple pre-emptive cache for .net that will refresh in the background, and thus provide you with zero latency reads.
 
 The cache is created with a builder that basically looks like:
@@ -21,7 +23,6 @@ You can also do things such as:
 * Add a ramp up period for each value update on a refresh
 * Add an duration before begining the preload
 * Evict items that have not been used between refreshes
-
 
 
 [![Join the chat at https://gitter.im/quezlatch/Binky](https://badges.gitter.im/quezlatch/Binky.svg)](https://gitter.im/quezlatch/Binky?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
