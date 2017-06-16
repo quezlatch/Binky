@@ -28,4 +28,38 @@ You can also do things such as:
 [![Join the chat at https://gitter.im/quezlatch/Binky](https://badges.gitter.im/quezlatch/Binky.svg)](https://gitter.im/quezlatch/Binky?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 preemptive caching for .net
 
+# Example
 
+If you have a repository as the below
+
+```
+
+public class MyRepository 
+{
+  public Thing GetThings(string key)
+  {
+    # NB has to take a cancellation token
+    return _someExpensiveMethodCall(key, default(CancellationToken));
+  }
+}
+
+```
+
+then amend this to
+
+```
+
+public class MyRepository
+{
+  public static Cache<string, Thing> _cache = CacheBuilder
+                .WithAsync<string, Thing>(_someExpensiveMethodCall)
+                .RefreshEvery(TimeSpan.FromMinutes(1))
+                .Build();
+                
+   public Thing GetThings(string key)
+  {
+    return _cache.Get(key);
+  }
+}
+
+```
